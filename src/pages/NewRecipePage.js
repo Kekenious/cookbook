@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { IoReturnUpBack, IoTrashOutline } from 'react-icons/io5';
 import { GoPlusSmall } from 'react-icons/go';
 import { GiForkKnifeSpoon } from 'react-icons/gi';
+import uuid from "./../utils/uuid";
 
 export function NewRecipePage() {
   const [title, setTitle] = useState('');
@@ -20,7 +21,7 @@ export function NewRecipePage() {
   const [ingredients, setIngredients] = useState([]);
 
   const addIngredient = () => {
-    setIngredients([...ingredients, ingredient]);
+    setIngredients([...ingredients, fillIngredient()]);
     clearInputs();
   };
 
@@ -32,11 +33,12 @@ export function NewRecipePage() {
   }
 
   const removeIngredient = (id) => {
+    console.log(id);
     const index = ingredients.indexOf(
       ingredients.find((item) => item.id === id),
     );
-    setIngredients([ingredients].splice(index, 1));
-    console.log(id);
+    ingredients.splice(index, 1)
+    setIngredients([ingredients]);
   };
 
   function saveRecipe() {
@@ -47,10 +49,10 @@ export function NewRecipePage() {
   }
 
   const ingredientLine = ingredients?.map(
-    ({ id, name, amount, amountUnit }) => {
+    ({ id, name, amount, unit }) => {
       return (
         <li key={id}>
-          {amount} {amountUnit} {name}{' '}
+          {amount} {unit} {name}{' '}
           <IoTrashOutline
             type="button"
             size="20"
@@ -63,14 +65,29 @@ export function NewRecipePage() {
       );
     },
   );
+  
+function generateUUID() {
 
-  const ingredient = {
-    id: Math.floor(Math.random() * 1000),
+}
+
+  function createIngredient({amount,unit,name,isGroup}) {
+    return {
+      id: uuid(),
+      amount,
+      unit,
+      name,
+      isGroup
+    }
+  }
+
+  function fillIngredient() {
+    return createIngredient({
     amount: parseInt(ingredientAmount),
-    amountUnit: ingredientAmountUnit,
-    isGroup: isGroup,
+    unit: ingredientAmountUnit,
     name: ingredientName,
-  };
+    isGroup: isGroup,
+    })
+  }
 
   const recipe = {
     title: title,
